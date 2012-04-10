@@ -6,7 +6,7 @@
 
   <title>Timepicker for jQuery</title>
   <meta name="description" content="A jQuery timepicker plugin inspired by Google Calendar." />
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
   <script type="text/javascript" src="jquery.timepicker.js"></script>
 
   <link rel="stylesheet" type="text/css" href="jquery.timepicker.css" />
@@ -287,7 +287,18 @@ $('#stepExample2').timepicker({ 'step': 60 });</pre>
 		<p>Datepair source available <a href="http://jonthornton.github.com/jquery-timepicker/datepair.js">here</a>.</p>
 	</div>
 
+	<div class="example">
+		<script>
+		  $(function() {
+			$('#altFieldExample').timepicker({ altField: '#altFieldExample2', altFormat: 'H:i', addMarkers: false, pmBeforeAm: true, step: 15 });
+		  });
+		</script>
 
+		<h3>altField Example</h3>
+		<p><input id="altFieldExample" type="text" class="time" /><input id="altFieldExample2" type="text"/></p>
+
+		<pre class="code" data-language="javascript">$('#altFieldExample').timepicker({ altField: '#altFieldExample2', altFormat: 'H:i', addMarkers: false, pmBeforeAm: true, step: 15 });</pre>
+	</div>
 
 
 
