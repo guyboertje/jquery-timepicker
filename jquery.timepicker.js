@@ -1,5 +1,5 @@
 (function($, w) {
-  var methods, _ONE_DAY, _addCssToRow, _baseDate, _defaults, _findRow, _int2duration, _int2time, _isPm, _keyhandler, _render, _selectValue, _setSelected, _time2int;
+  var methods, _ONE_DAY, _addCssToRow, _baseDate, _defaults, _findRow, _int2duration, _int2time, _isPm, _keyhandler, _render, _reposition, _selectValue, _setSelected, _time2int;
   _render = function(self) {
     var am, durStart, duration, ele, end, i, list, pm, row, settings, start, timeInt, timeText, zIndex, _i, _j, _len, _len2, _ref, _ref2;
     settings = self.data("settings");
@@ -7,7 +7,7 @@
     if (list && list.length) {
       list.remove();
     }
-    list = $("<ul />");
+    list = $("<div />");
     list.attr("tabindex", -1);
     list.addClass("ui-timepicker-list");
     if (settings.className) {
@@ -18,7 +18,6 @@
     list.css({
       display: "none",
       position: "absolute",
-      left: (self.position().left),
       zIndex: zIndex
     });
     if (settings.minTime !== null && settings.showDuration) {
@@ -31,11 +30,15 @@
       end += _ONE_DAY;
     }
     i = start;
-    am = [];
-    pm = [];
+    pm = $("<ul></ul>");
+    pm.addClass("ui-timepicker-sublist");
     if (settings.addMarkers) {
-      pm.push($("<div class='ui-timepicker-marker'>PM</div>"));
-      am.push($("<div class='ui-timepicker-marker'>AM</div>"));
+      pm.append($("<div class='ui-timepicker-marker'>PM</div>"));
+    }
+    am = $("<ul></ul>");
+    am.addClass("ui-timepicker-sublist");
+    if (settings.addMarkers) {
+      am.append($("<div class='ui-timepicker-marker'>AM</div>"));
     }
     while (i <= end) {
       timeInt = i % _ONE_DAY;
@@ -52,22 +55,22 @@
       if (_isPm(timeText.toLowerCase())) {
         row.addClass("ui-timepicker-pm");
         _addCssToRow(row, timeText, settings.step, true);
-        pm.push(row);
+        pm.append(row);
       } else {
         row.addClass("ui-timepicker-am");
         _addCssToRow(row, timeText, settings.step, false);
-        am.push(row);
+        am.append(row);
       }
       i += settings.step * 60;
     }
     if (settings.pmBeforeAm) {
-      _ref = pm.concat(am);
+      _ref = [pm, am];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         ele = _ref[_i];
         list.append(ele);
       }
     } else {
-      _ref2 = am.concat(pm);
+      _ref2 = [am, pm];
       for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
         ele = _ref2[_j];
         list.append(ele);
@@ -75,6 +78,10 @@
     }
     self.after(list);
     _setSelected(self, list);
+    $(w).resize({
+      self: self,
+      list: list
+    }, _reposition);
     return list.delegate("li", "click", {
       timepicker: self
     }, function(e) {
@@ -84,6 +91,16 @@
       $(this).addClass("ui-timepicker-selected");
       _selectValue(self);
       return list.hide();
+    });
+  };
+  _reposition = function(event) {
+    var list, self, top;
+    self = event.data.self;
+    list = event.data.list;
+    top = (self.offset().top + self.outerHeight(true) + list.outerHeight()) > $(w).height() + $(w).scrollTop() ? self.position().top - list.outerHeight() : self.position().top + self.outerHeight(true);
+    return list.css({
+      left: (self.position().left),
+      top: top
     });
   };
   _addCssToRow = function(row, value, step) {
@@ -402,15 +419,12 @@
         _render(self);
         list = self.siblings(".ui-timepicker-list");
       }
-      if ((self.offset().top + self.outerHeight(true) + list.outerHeight()) > $(w).height() + $(w).scrollTop()) {
-        list.css({
-          top: self.position().top - list.outerHeight()
-        });
-      } else {
-        list.css({
-          top: self.position().top + self.outerHeight(true)
-        });
-      }
+      _reposition({
+        data: {
+          self: self,
+          list: list
+        }
+      });
       list.show();
       settings = self.data("settings");
       selected = list.find(".ui-timepicker-selected");

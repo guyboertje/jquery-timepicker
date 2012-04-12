@@ -1,11 +1,58 @@
-.ui-timepicker-list { overflow-y: auto; height: 150px; width: 16.9em; background: #fff; border: 1px solid #ddd; margin: 0; padding: 0 0 0 2px; list-style: none; }
-.ui-timepicker-list.ui-timepicker-with-duration { width: 11em; }
-.ui-timepicker-duration { margin-left: 5px; color: #888; }
-.ui-timepicker-list:hover .ui-timepicker-duration { color: #888; }
-.ui-timepicker-list li { padding: 3px 0 3px 5px; display: inline-block; cursor: pointer; font-size: 0.8em; line-height: 1.2em ; width: 4.4em; border: 1px solid #ddd; white-space: nowrap; color: #000; list-style: none; margin-right: 2px; }
-.ui-timepicker-list li.ui-timepicker-pm { color: #000; }
-.ui-timepicker-list li.ui-timepicker-full { color: #070;}
-.ui-timepicker-marker { background: #ddd; width: 100%; font-size: 0.8em; line-height: 1.0em; text-align: center;}
-.ui-timepicker-list:hover .ui-timepicker-selected { background: #fff; color: #000; }
-li.ui-timepicker-selected, .ui-timepicker-list li:hover, .ui-timepicker-list:hover .ui-timepicker-selected:hover { background: #1980EC; color: #fff; }
-li.ui-timepicker-selected .ui-timepicker-duration, .ui-timepicker-list li:hover .ui-timepicker-duration { color: #ccc; }
+.ui-timepicker-list {
+  overflow-y: auto;
+  height: 150px;
+  width: 21.1em;
+  background: white;
+  border: 1px solid #dddddd;
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+  .ui-timepicker-list.ui-timepicker-with-duration {
+    width: 11em; }
+
+.ui-timepicker-duration {
+  margin-left: 5px;
+  color: #888888; }
+
+.ui-timepicker-sublist {
+  background: #b7d3e1;
+  padding: 0 0 0 2px; }
+  .ui-timepicker-sublist:hover .ui-timepicker-duration {
+    color: #888888; }
+  .ui-timepicker-sublist li {
+    padding: 3px 0 3px 5px;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1em;
+    line-height: 1.2em;
+    width: 4.4em;
+    border: 1px solid #dddddd;
+    white-space: nowrap;
+    color: black;
+    background: white;
+    list-style: none;
+    margin-right: 2px; }
+    .ui-timepicker-sublist li.ui-timepicker-pm {
+      color: black; }
+    .ui-timepicker-sublist li.ui-timepicker-full {
+      color: #007700; }
+  .ui-timepicker-sublist:hover .ui-timepicker-selected {
+    background: white;
+    color: black; }
+
+.ui-timepicker-marker {
+  width: 100%;
+  font-size: 1em;
+  line-height: 1.4em;
+  text-align: center; }
+
+li.ui-timepicker-selected {
+  background: #1980ec;
+  color: white; }
+
+.ui-timepicker-list li:hover, .ui-timepicker-list:hover .ui-timepicker-selected:hover {
+  background: #1980ec;
+  color: white; }
+
+li.ui-timepicker-selected .ui-timepicker-duration, .ui-timepicker-list li:hover .ui-timepicker-duration {
+  color: #cccccc; }

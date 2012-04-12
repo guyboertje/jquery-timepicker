@@ -3,7 +3,7 @@
     settings = self.data("settings")
     list = self.siblings(".ui-timepicker-list")
     list.remove()  if list and list.length
-    list = $("<ul />")
+    list = $("<div />")
     list.attr "tabindex", -1
     list.addClass "ui-timepicker-list"
     list.addClass settings.className  if settings.className
@@ -12,7 +12,6 @@
     list.css
       display: "none"
       position: "absolute"
-      left: (self.position().left)
       zIndex: zIndex
 
     list.addClass "ui-timepicker-with-duration"  if settings.minTime isnt null and settings.showDuration
@@ -21,11 +20,12 @@
     end = (if (settings.maxTime isnt null) then settings.maxTime else (start + _ONE_DAY - 1))
     end += _ONE_DAY  if end <= start
     i = start
-    am = []
-    pm = []
-    if settings.addMarkers
-      pm.push $("<div class='ui-timepicker-marker'>PM</div>")
-      am.push $("<div class='ui-timepicker-marker'>AM</div>")
+    pm = $("<ul></ul>")
+    pm.addClass "ui-timepicker-sublist"
+    pm.append $("<div class='ui-timepicker-marker'>PM</div>") if settings.addMarkers
+    am = $("<ul></ul>")
+    am.addClass "ui-timepicker-sublist"
+    am.append $("<div class='ui-timepicker-marker'>AM</div>") if settings.addMarkers
     while i <= end
       timeInt = i % _ONE_DAY
       row = $("<li />")
@@ -40,18 +40,19 @@
       if _isPm(timeText.toLowerCase())
         row.addClass "ui-timepicker-pm"
         _addCssToRow row, timeText, settings.step, true
-        pm.push row
+        pm.append row
       else
         row.addClass "ui-timepicker-am"
         _addCssToRow row, timeText, settings.step, false
-        am.push row
+        am.append row
       i += settings.step * 60
     if settings.pmBeforeAm
-      list.append ele for ele in pm.concat(am)
+      list.append ele for ele in [pm, am]
     else
-      list.append ele for ele in am.concat(pm)
+      list.append ele for ele in [am, pm]
     self.after list
     _setSelected self, list
+    $(w).resize {self: self, list: list}, _reposition
     list.delegate "li", "click",
       timepicker: self
     , (e) ->
@@ -61,6 +62,16 @@
       $(this).addClass "ui-timepicker-selected"
       _selectValue self
       list.hide()
+  _reposition = (event) ->
+    self = event.data.self
+    list = event.data.list
+    top = if (self.offset().top + self.outerHeight(true) + list.outerHeight()) > $(w).height() + $(w).scrollTop()
+            self.position().top - list.outerHeight()
+          else
+            self.position().top + self.outerHeight(true)
+    list.css
+      left: (self.position().left)
+      top: top
   _addCssToRow = (row, value, step) ->
     if not value.match(/00/)
       row.addClass "ui-timepicker-qtr" if step is 15
@@ -280,10 +291,7 @@
       if list.length is 0
         _render self
         list = self.siblings(".ui-timepicker-list")
-      if (self.offset().top + self.outerHeight(true) + list.outerHeight()) > $(w).height() + $(w).scrollTop()
-        list.css top: self.position().top - list.outerHeight()
-      else
-        list.css top: self.position().top + self.outerHeight(true)
+      _reposition(data: {self: self, list: list})
       list.show()
       settings = self.data("settings")
       selected = list.find(".ui-timepicker-selected")
